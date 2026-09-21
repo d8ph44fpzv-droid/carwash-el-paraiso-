@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Carwash El Paraíso</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:#f2f4f7;color:#171717}
+header{background:#111;color:#fff;padding:18px 16px calc(18px + env(safe-area-inset-top));text-align:center;position:sticky;top:0;z-index:5}
+header h1{font-size:24px;margin:0 0 4px}header p{margin:0;font-size:13px}
+main{padding:14px;max-width:700px;margin:auto}.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 12px #0001}
+h2{font-size:19px;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:13px;font-weight:700;display:block}input,select{width:100%;margin-top:5px;padding:13px;border:1px solid #c7ccd3;border-radius:10px;font-size:16px;background:#fff}
+button{width:100%;padding:14px;border:0;border-radius:11px;font-size:16px;font-weight:800;margin-top:10px}
+.primary{background:#111;color:#fff}.gold{background:#f3b500;color:#111}.green{background:#16803c;color:#fff}.light{background:#e8ebef}
+.notice{padding:10px;border-radius:10px;background:#eef7ee;margin-top:10px;font-size:14px}
+.receipt{display:none;border:1px solid #222}.center{text-align:center}.line{border-top:1px solid #bbb;margin:14px 0}.row{display:flex;justify-content:space-between;gap:15px;margin:8px 0}.total{font-size:22px;font-weight:900}.free{font-weight:900}
+.stat{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee}
+.search{display:flex;gap:8px}.search input{flex:1}.search button{width:auto;margin:5px 0;padding:12px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+@media print{body{background:#fff}.no-print,header,.entry,.history,.stats{display:none!important}.receipt{display:block!important;box-shadow:none}}
+</style>
+</head>
+<body>
+<header><h1>CARWASH EL PARAÍSO</h1><p>PAUTE, ECUADOR · CAMBIO DE ACEITE + LAVADO GRATIS</p></header>
+<main>
+<section class="card entry">
+<h2>🧾 Nuevo servicio</h2>
+<div class="grid">
+<div><label>Cliente</label><input id="cliente" placeholder="Nombre"></div>
+<div><label>Teléfono</label><input id="telefono" type="tel" placeholder="09..."></div>
+<div><label>Vehículo</label><input id="vehiculo" placeholder="Marca y modelo"></div>
+<div><label>Placa</label><input id="placa" placeholder="ABC-1234"></div>
+<div><label>Kilometraje</label><input id="km" type="number" placeholder="120000"></div>
+<div><label>Aceite</label><select id="aceite">
+<option value="">Seleccionar</option><option value="30">5W-30 — $30</option>
+<option value="32">10W-30 — $32</option><option value="35">10W-40 — $35</option>
+<option value="40">Sintético — $40</option></select></div>
+<div><label>Filtro ($)</label><input id="filtro" type="number" value="8"></div>
+<div><label>Mano de obra ($)</label><input id="mano" type="number" value="5"></div>
+<div><label>Próximo cambio (km)</label><input id="proximo" type="number"></div>
+</div>
+<button class="primary" id="generar">GENERAR RECIBO</button>
+<button class="light" id="limpiar">LIMPIAR</button>
+<div id="msg"></div>
+</section>
+
+<section class="card history">
+<h2>🔎 Buscar por placa o cliente</h2>
+<div class="search"><input id="buscar" placeholder="Placa o nombre"><button class="primary" id="btnBuscar">BUSCAR</button></div>
+<button class="light" id="btnTodo">MOSTRAR TODO</button>
+<div id="resultados" style="margin-top:10px"></div>
+</section>
+
+<section class="card stats">
+<h2>📊 Resumen</h2>
+<div class="stat"><span>Servicios</span><b id="nServicios">0</b></div>
+<div class="stat"><span>Ventas</span><b>$<span id="nVentas">0.00</span></b></div>
+<div class="stat"><span>Lavados gratis</span><b id="nLavados">0</b></div>
+</section>
+
+<section class="card receipt" id="recibo">
+<div class="center"><h2>CARWASH EL PARAÍSO</h2><b>PAUTE, ECUADOR</b><p><b>CAMBIO DE ACEITE + LAVADO GRATIS</b></p></div>
+<div class="line"></div>
+<div class="row"><span>Recibo</span><b id="rNum"></b></div><div class="row"><span>Fecha</span><span id="rFecha"></span></div>
+<div class="row"><span>Cliente</span><span id="rCliente"></span></div><div class="row"><span>Teléfono</span><span id="rTel"></span></div>
+<div class="row"><span>Vehículo</span><span id="rVeh"></span></div><div class="row"><span>Placa</span><span id="rPlaca"></span></div>
+<div class="row"><span>Kilometraje</span><span id="rKm"></span></div><div class="line"></div>
+<div class="row"><span>Aceite</span><span>$<span id="rAceite"></span></span></div>
+<div class="row"><span>Filtro</span><span>$<span id="rFiltro"></span></span></div>
+<div class="row"><span>Mano de obra</span><span>$<span id="rMano"></span></span></div>
+<div class="row free"><span>🧼 Lavado</span><span>GRATIS</span></div><div class="line"></div>
+<div class="row total"><span>TOTAL</span><span>$<span id="rTotal"></span></span></div>
+<div class="line"></div><p><b>Próximo cambio:</b> <span id="rProximo"></span> km</p>
+<p class="center"><b>¡Gracias por preferir Carwash El Paraíso!</b></p>
+<button class="gold no-print" id="imprimir">🖨️ GUARDAR / IMPRIMIR PDF</button>
+<button class="green no-print" id="whatsapp">📲 ENVIAR POR WHATSAPP</button>
+</section>
+</main>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+let num=Number(localStorage.getItem("cep_num")||0);
+let data=JSON.parse(localStorage.getItem("cep_data")||"[]");
+function money(x){return Number(x||0).toFixed(2)}
+function save(){localStorage.setItem("cep_num",num);localStorage.setItem("cep_data",JSON.stringify(data))}
+function summary(){ $("nServicios").textContent=data.length; $("nVentas").textContent=money(data.reduce((a,x)=>a+x.total,0)); $("nLavados").textContent=data.length; }
+function render(list){
+ const box=$("resultados"); box.innerHTML="";
+ if(!list.length){box.innerHTML="<div class='notice'>No hay resultados.</div>";return}
+ list.slice().reverse().forEach(x=>{let d=document.createElement("div");d.className="notice";d.textContent=`Recibo ${x.num} · ${x.cliente} · ${x.placa} · $${money(x.total)}`;box.appendChild(d)})
+}
+$("generar").onclick=function(){
+ const cliente=$("cliente").value.trim(),veh=$("vehiculo").value.trim(),placa=$("placa").value.trim(),aceite=Number($("aceite").value);
+ if(!cliente||!veh||!placa||!aceite){$("msg").innerHTML="<div class='notice'>⚠️ Completa cliente, vehículo, placa y aceite.</div>";return}
+ const filtro=Number($("filtro").value||0),mano=Number($("mano").value||0),total=aceite+filtro+mano;
+ num++;const id=String(num).padStart(6,"0");data.push({num:id,cliente,placa,total,date:new Date().toLocaleDateString("es-EC")});save();summary();render(data);
+ $("rNum").textContent=id;$("rFecha").textContent=new Date().toLocaleDateString("es-EC");$("rCliente").textContent=cliente;
+ $("rTel").textContent=$("telefono").value||"-";$("rVeh").textContent=veh;$("rPlaca").textContent=placa;$("rKm").textContent=$("km").value||"-";
+ $("rAceite").textContent=money(aceite);$("rFiltro").textContent=money(filtro);$("rMano").textContent=money(mano);$("rTotal").textContent=money(total);
+ $("rProximo").textContent=$("proximo").value||"________";$("recibo").style.display="block";$("msg").innerHTML="<div class='notice'>✅ Recibo creado.</div>";
+ $("recibo").scrollIntoView({behavior:"smooth"});
+};
+$("limpiar").onclick=()=>{["cliente","telefono","vehiculo","placa","km","proximo"].forEach(id=>$(id).value="");$("aceite").value="";$("filtro").value=8;$("mano").value=5;$("msg").innerHTML=""};
+$("btnBuscar").onclick=()=>{let q=$("buscar").value.toLowerCase().trim();render(q?data.filter(x=>(x.cliente+" "+x.placa).toLowerCase().includes(q)):data)};
+$("btnTodo").onclick=()=>{ $("buscar").value="";render(data)};
+$("imprimir").onclick=()=>window.print();
+$("whatsapp").onclick=()=>{
+ const text=`CARWASH EL PARAÍSO - PAUTE\nCambio de aceite + lavado GRATIS\nRecibo: ${$("rNum").textContent}\nCliente: ${$("rCliente").textContent}\nVehículo: ${$("rVeh").textContent}\nPlaca: ${$("rPlaca").textContent}\nTOTAL: $${$("rTotal").textContent}\nPróximo cambio: ${$("rProximo").textContent} km`;
+ const tel=$("rTel").textContent.replace(/\D/g,""); const url=tel?`https://wa.me/${tel}?text=${encodeURIComponent(text)}`:`https://wa.me/?text=${encodeURIComponent(text)}`; window.location.href=url;
+};
+summary();render(data);
+})();
+</script>
+</body></html>
